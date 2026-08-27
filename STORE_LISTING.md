@@ -6,8 +6,8 @@ Tudo o que o cadastro pede, já preenchido. Os textos que vão para a loja estã
 
 - **[você]** Conta de desenvolvedor no [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) — taxa **única de US$ 5** por conta (não por extensão).
 - URL da política de privacidade. Duas opções:
-  - **Já funciona, sem configurar nada:** `https://github.com/LucasFrankHollmann/video-tuner/blob/main/PRIVACY.md`
-  - **Página formatada:** ligar o GitHub Pages em *Settings → Pages → Branch `main`, pasta `/docs`* e usar `https://lucasfrankhollmann.github.io/video-tuner/`. Enquanto o Pages não estiver ligado essa URL dá **404**, e a Store valida o link. Dá para trocar esse campo depois, sem reenviar o pacote.
+  - **Já funciona, sem configurar nada:** `https://github.com/LucasHollmann/video-tuner/blob/main/PRIVACY.md`
+  - **Página formatada:** ligar o GitHub Pages em *Settings → Pages → Branch `main`, pasta `/docs`* e usar `https://lucashollmann.github.io/video-tuner/`. Enquanto o Pages não estiver ligado essa URL dá **404**, e a Store valida o link. Dá para trocar esse campo depois, sem reenviar o pacote.
 
   As duas têm o mesmo conteúdo, com resumo em inglês no fim — que é o que o revisor lê.
 
@@ -28,25 +28,26 @@ Sai `video-tuner-<versão>.zip` na raiz, com o `manifest.json` na raiz do zip (�
 | Campo | Valor |
 | --- | --- |
 | **Name** | `Video Tuner` |
-| **Summary** (máx. 132 caracteres) | `Control playback speed (up to 8x) and volume (up to 600%) right on top of the video, on any site.` (97 caracteres) |
+| **Summary** (máx. 132 caracteres) | `Control speed (up to 8x), volume (up to 600%) and picture-in-picture right on top of the video, on any site.` (108 caracteres) |
 | **Category** | Tools |
 | **Default language** | English (United States) |
-| **Website URL** | `https://github.com/LucasFrankHollmann/video-tuner` |
-| **Support URL** | `https://github.com/LucasFrankHollmann/video-tuner/issues` |
+| **Website URL** | `https://github.com/LucasHollmann/video-tuner` |
+| **Support URL** | `https://github.com/LucasHollmann/video-tuner/issues` |
 
 O campo *Summary* vem pré-preenchido com a `description` do manifest, que está em pt-BR. Substitua pelo texto em inglês acima.
 
 ### Description (colar como está)
 
 ```
-Control the speed and volume of any video without leaving the page.
+Control the speed, the volume and picture-in-picture of any video without leaving the page.
 
-Hover a video and a small badge appears in the corner. Hover the badge and it expands into the controls — sliders and presets, right on top of the player.
+Hover a video and a small badge appears in the corner, with a one-click picture-in-picture button. Hover the badge and it expands into the controls — sliders and presets, right on top of the player.
 
 FEATURES
 
 • Playback speed from 0.25x to 8x, with presets at 0.5x, 1x, 1.5x, 2x, 4x and 8x.
 • Volume from 0% to 600%. Above 100% the audio is amplified through the Web Audio API — handy for quietly recorded videos.
+• Picture-in-picture in one click, straight from the badge — including on players that hide the browser's own picture-in-picture entry.
 • Per-video settings: what you change applies only to that video. Every other video on the page keeps the site's own behavior.
 • A video you never adjusted is left untouched — the volume the site set stays exactly as it was.
 • A "back to default" button that restores the precise values from before your adjustment.
@@ -56,13 +57,13 @@ FEATURES
 
 SETTINGS
 
-The extension icon opens a settings screen where you choose which controls the overlay shows (speed, volume, or both) and which corner of the video it sits in.
+The extension icon opens a settings screen where you choose which controls the overlay shows (speed, volume and picture-in-picture, in any combination) and which corner of the video it sits in.
 
 PRIVACY
 
 No data is collected, transmitted, or sold. The extension makes no network requests and contains no analytics or trackers. The only thing stored is your display preference, in the browser's own local storage.
 
-Open source (MIT): https://github.com/LucasFrankHollmann/video-tuner
+Open source (MIT): https://github.com/LucasHollmann/video-tuner
 ```
 
 ## 4. Imagens
@@ -97,16 +98,16 @@ As capturas mostram a **interface real** — o `dist/content.js` e o bundle da t
 **Single purpose:**
 
 ```
-Adjust the playback speed and volume of videos on the page the user is viewing, through a control overlaid on the video itself.
+Adjust the playback speed and volume of videos on the page the user is viewing, and send them to picture-in-picture, through a control overlaid on the video itself.
 ```
 
 **Justificativa de cada permissão:**
 
 | Permissão | Justificativa (colar) |
 | --- | --- |
-| `storage` | `Stores only the user's display preference: which controls the overlay shows and which corner of the video it sits in. Nothing else is stored, and nothing leaves the device.` |
+| `storage` | `Stores only the user's display preferences: which of the controls (speed, volume, picture-in-picture) the overlay shows and which corner of the video it sits in. Nothing else is stored, and nothing leaves the device.` |
 | `activeTab` | `The keyboard shortcuts need to identify the active tab in order to apply the speed change to the video the user is currently watching.` |
-| Acesso a todos os sites (`host_permissions` / content script em `<all_urls>`) | `Videos exist on any website, and the extension's entire purpose is to control the video wherever it happens to be. The access is used only to inject the script that locates video elements and changes their playbackRate and volume properties, and to draw the overlaid control. The extension does not read page content, does not access cookies, history or form data, and sends nothing to any server — it makes no network requests at all.` |
+| Acesso a todos os sites (`host_permissions` / content script em `<all_urls>`) | `Videos exist on any website, and the extension's entire purpose is to control the video wherever it happens to be. The access is used only to inject the script that locates video elements, changes their playbackRate and volume properties, sends them to picture-in-picture on request, and draws the overlaid control. The extension does not read page content, does not access cookies, history or form data, and sends nothing to any server — it makes no network requests at all.` |
 
 **Are you using remote code?** *No, I am not using remote code.* Todo o JavaScript vai dentro do pacote; a extensão não carrega script externo nem usa `eval`.
 
@@ -116,7 +117,7 @@ Adjust the playback speed and volume of videos on the page the user is viewing, 
 - I do not use or transfer user data for purposes that are unrelated to my item's single purpose;
 - I do not use or transfer user data to determine creditworthiness or for lending purposes.
 
-**Privacy policy URL:** `https://github.com/LucasFrankHollmann/video-tuner/blob/main/PRIVACY.md` — ou a do GitHub Pages, se você ligou (ver seção 1).
+**Privacy policy URL:** `https://github.com/LucasHollmann/video-tuner/blob/main/PRIVACY.md` — ou a do GitHub Pages, se você ligou (ver seção 1).
 
 ## 6. Distribuição
 
@@ -129,13 +130,13 @@ Adjust the playback speed and volume of videos on the page the user is viewing, 
 O dashboard avisa que `<all_urls>` leva a **revisão detalhada** e sugere `activeTab`. A troca não serve aqui, e é isso que este texto explica — vale colar mesmo sendo campo opcional, porque é a única chance de responder ao ponto antes da fila.
 
 ```
-Open source: https://github.com/LucasFrankHollmann/video-tuner
+Open source: https://github.com/LucasHollmann/video-tuner
 
-How to test: open any site with a video (youtube.com, for example) and hover the video. A badge appears in the corner; hover it and the panel expands with the speed and volume controls. The extension icon opens the settings screen.
+How to test: open any site with a video (youtube.com, for example) and hover the video. A badge appears in the corner, with a picture-in-picture button; hover the badge and the panel expands with the speed and volume controls. The extension icon opens the settings screen.
 
 Why broad host access is required, and why activeTab cannot replace it: the overlay must appear on hover, with no prior click, on whichever page the user is already watching a video on. activeTab is granted only after an explicit gesture on the extension icon, which would mean clicking the icon on every tab and after every navigation before any control shows up. A fixed list of sites is equally unworkable, since videos appear on arbitrary sites — that is the entire point of the extension.
 
-What the access is actually used for: locating video and audio elements (including inside Shadow DOM) and reading/writing only their playbackRate and volume, plus drawing the overlay inside a Shadow DOM. The extension does not read page content, cookies, history or form data. There are no network requests, no remote code, no analytics, and no data collection.
+What the access is actually used for: locating video and audio elements (including inside Shadow DOM) and reading/writing only their playbackRate and volume, calling the standard requestPictureInPicture API when the user clicks the picture-in-picture button, plus drawing the overlay inside a Shadow DOM. The extension does not read page content, cookies, history or form data. There are no network requests, no remote code, no analytics, and no data collection.
 
 Note: the extension's user interface is in Brazilian Portuguese.
 ```
