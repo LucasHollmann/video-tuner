@@ -59,6 +59,39 @@
   color: var(--muted);
 }
 
+.vt-pip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  margin: -2px -2px -2px 0;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Separa do valor a esquerda — mas so quando existe algum valor no selo. */
+.vt-value + .vt-pip {
+  padding-left: 7px;
+  margin-left: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0 5px 5px 0;
+}
+
+.vt-pip:hover {
+  color: var(--text);
+}
+
+.vt-pip.is-active {
+  color: var(--accent);
+}
+
+.vt-pip svg {
+  display: block;
+}
+
 .vt-body {
   width: 240px;
   padding: 10px;
