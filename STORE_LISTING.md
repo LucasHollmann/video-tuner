@@ -6,8 +6,8 @@ Tudo o que o cadastro pede, já preenchido. Os textos que vão para a loja estã
 
 - **[você]** Conta de desenvolvedor no [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) — taxa **única de US$ 5** por conta (não por extensão).
 - URL da política de privacidade. Duas opções:
-  - **Já funciona, sem configurar nada:** `https://github.com/LucasFrankHollmann/video-tuner/blob/main/PRIVACY.md`
-  - **Página formatada:** ligar o GitHub Pages em *Settings → Pages → Branch `main`, pasta `/docs`* e usar `https://lucasfrankhollmann.github.io/video-tuner/`. Enquanto o Pages não estiver ligado essa URL dá **404**, e a Store valida o link. Dá para trocar esse campo depois, sem reenviar o pacote.
+  - **Já funciona, sem configurar nada:** `https://github.com/LucasHollmann/video-tuner/blob/main/PRIVACY.md`
+  - **Página formatada:** ligar o GitHub Pages em *Settings → Pages → Branch `main`, pasta `/docs`* e usar `https://lucashollmann.github.io/video-tuner/`. Enquanto o Pages não estiver ligado essa URL dá **404**, e a Store valida o link. Dá para trocar esse campo depois, sem reenviar o pacote.
 
   As duas têm o mesmo conteúdo, com resumo em inglês no fim — que é o que o revisor lê.
 
@@ -31,8 +31,8 @@ Sai `video-tuner-<versão>.zip` na raiz, com o `manifest.json` na raiz do zip (�
 | **Summary** (máx. 132 caracteres) | `Control speed (up to 8x), volume (up to 600%) and picture-in-picture right on top of the video, on any site.` (108 caracteres) |
 | **Category** | Tools |
 | **Default language** | English (United States) |
-| **Website URL** | `https://github.com/LucasFrankHollmann/video-tuner` |
-| **Support URL** | `https://github.com/LucasFrankHollmann/video-tuner/issues` |
+| **Website URL** | `https://github.com/LucasHollmann/video-tuner` |
+| **Support URL** | `https://github.com/LucasHollmann/video-tuner/issues` |
 
 O campo *Summary* vem pré-preenchido com a `description` do manifest, que está em pt-BR. Substitua pelo texto em inglês acima.
 
@@ -63,7 +63,7 @@ PRIVACY
 
 No data is collected, transmitted, or sold. The extension makes no network requests and contains no analytics or trackers. The only thing stored is your display preference, in the browser's own local storage.
 
-Open source (MIT): https://github.com/LucasFrankHollmann/video-tuner
+Open source (MIT): https://github.com/LucasHollmann/video-tuner
 ```
 
 ## 4. Imagens
@@ -117,7 +117,7 @@ Adjust the playback speed and volume of videos on the page the user is viewing, 
 - I do not use or transfer user data for purposes that are unrelated to my item's single purpose;
 - I do not use or transfer user data to determine creditworthiness or for lending purposes.
 
-**Privacy policy URL:** `https://github.com/LucasFrankHollmann/video-tuner/blob/main/PRIVACY.md` — ou a do GitHub Pages, se você ligou (ver seção 1).
+**Privacy policy URL:** `https://github.com/LucasHollmann/video-tuner/blob/main/PRIVACY.md` — ou a do GitHub Pages, se você ligou (ver seção 1).
 
 ## 6. Distribuição
 
@@ -130,7 +130,7 @@ Adjust the playback speed and volume of videos on the page the user is viewing, 
 O dashboard avisa que `<all_urls>` leva a **revisão detalhada** e sugere `activeTab`. A troca não serve aqui, e é isso que este texto explica — vale colar mesmo sendo campo opcional, porque é a única chance de responder ao ponto antes da fila.
 
 ```
-Open source: https://github.com/LucasFrankHollmann/video-tuner
+Open source: https://github.com/LucasHollmann/video-tuner
 
 How to test: open any site with a video (youtube.com, for example) and hover the video. A badge appears in the corner, with a picture-in-picture button; hover the badge and the panel expands with the speed and volume controls. The extension icon opens the settings screen.
 

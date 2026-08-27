@@ -117,7 +117,7 @@ As imagens de [store/](store/) são geradas, não desenhadas à mão: as fontes 
 ## Privacidade
 
 A extensão não coleta, não transmite e não vende dado nenhum: não faz requisições de rede e só guarda a sua configuração em `chrome.storage.local`. Detalhes em [PRIVACY.md](PRIVACY.md), publicado também em
-<https://lucasfrankhollmann.github.io/video-tuner/> (`docs/index.html`, servido pelo GitHub Pages) — é essa a URL para o campo de política de privacidade da Chrome Web Store.
+<https://lucashollmann.github.io/video-tuner/> (`docs/index.html`, servido pelo GitHub Pages) — é essa a URL para o campo de política de privacidade da Chrome Web Store.
 
 ## Licença
 
