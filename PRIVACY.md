@@ -50,7 +50,7 @@ Se a política mudar, esta página e o arquivo `PRIVACY.md` no repositório ser�
 ## Contato
 
 Dúvidas ou pedidos sobre privacidade: abra uma issue em
-<https://github.com/LucasFrankHollmann/video-tuner/issues>.
+<https://github.com/LucasHollmann/video-tuner/issues>.
 
 ---
 
@@ -68,4 +68,4 @@ Permissions: `storage` (save preferences), `activeTab` (apply keyboard shortcuts
 
 No third parties are involved. Data is not sold, is not used for any purpose unrelated to the extension's core function, and is not used for creditworthiness or lending.
 
-Contact: <https://github.com/LucasFrankHollmann/video-tuner/issues>.
+Contact: <https://github.com/LucasHollmann/video-tuner/issues>.
