@@ -28,7 +28,14 @@ export default function App() {
           checked={settings.showVolume}
           onChange={(showVolume) => update({ showVolume })}
         />
-        {!settings.showSpeed && !settings.showVolume ? (
+        <Toggle
+          id="showPip"
+          label="Picture-in-picture"
+          hint="Botão para soltar o vídeo numa janela flutuante"
+          checked={settings.showPip}
+          onChange={(showPip) => update({ showPip })}
+        />
+        {!settings.showSpeed && !settings.showVolume && !settings.showPip ? (
           <p className="warn">Sem nenhum controle marcado, o overlay não aparece.</p>
         ) : null}
       </section>

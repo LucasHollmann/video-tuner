@@ -1,17 +1,17 @@
 # Video Tuner
 
-Extensão Chrome (Manifest V3) que coloca um controle de **velocidade** e **volume** sobre os vídeos de qualquer site.
+Extensão Chrome (Manifest V3) que coloca um controle de **velocidade**, **volume** e **picture-in-picture** sobre os vídeos de qualquer site.
 
 ## Como funciona
 
-- Passe o mouse sobre um vídeo → aparece um selo discreto no canto (configurável) com os valores atuais.
+- Passe o mouse sobre um vídeo → aparece um selo discreto no canto (configurável, por padrão o superior esquerdo) com os valores atuais e o botão de picture-in-picture.
 - Passe o mouse **no selo** → ele expande com os sliders e presets, mais um botão *Voltar ao padrão*.
 - O ajuste vale **só para aquele vídeo**. Nada é persistido: os outros vídeos da página, e a próxima visita, seguem o padrão do site.
 - Um vídeo que nunca foi ajustado não é tocado — o volume e a velocidade que o próprio player definiu ficam intactos.
 
 O ícone da extensão abre a **tela de configuração** (no lugar do popup, sem página separada):
 
-- quais controles aparecem no overlay: velocidade, volume, ou os dois;
+- quais controles aparecem no overlay: velocidade, volume e picture-in-picture, em qualquer combinação;
 - em qual canto do vídeo o overlay fica (superior/inferior, esquerdo/direito).
 
 Essa configuração é global e aplicada na hora, em todas as abas abertas.
@@ -20,6 +20,7 @@ Essa configuração é global e aplicada na hora, em todas as abas abertas.
 
 - **Velocidade** de 0.25x a 8x pelo overlay (0.07x a 16x via atalhos), com presets até 8x.
 - **Volume de 0% a 600%** — acima de 100% o áudio é amplificado por um `GainNode` do WebAudio.
+- **Picture-in-picture** num clique, direto no selo: solta o vídeo numa janela flutuante e traz de volta. Se o player tiver marcado `disablePictureInPicture` para esconder o recurso, o clique libera — é um pedido explícito seu.
 - **Atalhos de teclado** globais, aplicados ao vídeo sob o ponteiro (ou, na falta dele, ao maior vídeo visível que esteja tocando):
   | Atalho | Ação |
   | --- | --- |
@@ -72,6 +73,7 @@ src/
     engine.js               # estado por vídeo, WebAudio, atalhos, store observável
     Overlay.jsx             # selo + painel expansível
     useHoveredVideo.js      # qual vídeo está sob o ponteiro (hit test geométrico)
+    usePictureInPicture.js  # estado e acionamento do PiP do vídeo ativo
     usePlacement.js         # reparenta e posiciona o div no canto escolhido
     overlay.css             # selo/painel (injetado inline no shadow root)
 public/                     # copiado para dist/ sem transformação
@@ -94,6 +96,8 @@ O overlay leva o React para dentro de cada página (`dist/content.js`, ~200 kB /
 
 Vídeos menores que 160×90 px não recebem overlay — evita que thumbnails e anúncios ganhem um painel.
 
+O botão de picture-in-picture só aparece onde o navegador permite (`document.pictureInPictureEnabled`): fica de fora em iframes sem a permission policy `picture-in-picture` e em navegadores sem a API.
+
 Como nada é persistido, recarregar a página zera os ajustes. É o comportamento pedido: configuração por vídeo, padrão para o resto.
 
 O boost acima de 100% usa `createMediaElementSource`. Se a mídia for **cross-origin sem cabeçalhos CORS**, o navegador silencia o áudio nesse caminho; nesse caso a extensão detecta a falha e mantém o volume nativo (máximo 100%). Streams via MSE/blob (YouTube, Netflix, Twitch, Vimeo) não são afetados.
@@ -113,7 +117,7 @@ As imagens de [store/](store/) são geradas, não desenhadas à mão: as fontes 
 ## Privacidade
 
 A extensão não coleta, não transmite e não vende dado nenhum: não faz requisições de rede e só guarda a sua configuração em `chrome.storage.local`. Detalhes em [PRIVACY.md](PRIVACY.md), publicado também em
-<https://lucasfrankhollmann.github.io/video-tuner/> (`docs/index.html`, servido pelo GitHub Pages) — é essa a URL para o campo de política de privacidade da Chrome Web Store.
+<https://lucashollmann.github.io/video-tuner/> (`docs/index.html`, servido pelo GitHub Pages) — é essa a URL para o campo de política de privacidade da Chrome Web Store.
 
 ## Licença
 

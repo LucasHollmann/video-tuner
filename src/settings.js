@@ -14,7 +14,8 @@ export const CORNERS = [
 export const DEFAULT_SETTINGS = {
   showSpeed: true,
   showVolume: true,
-  corner: "bottom-left"
+  showPip: true,
+  corner: "top-left"
 };
 
 const KEY = "settings";

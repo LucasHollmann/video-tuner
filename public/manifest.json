@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Video Tuner",
-  "version": "1.0.0",
-  "description": "Controle a velocidade (até 8x) e o volume (até 600%) direto sobre o vídeo, em qualquer site.",
+  "version": "1.1.0",
+  "description": "Controle a velocidade (até 8x), o volume (até 600%) e o picture-in-picture direto sobre o vídeo, em qualquer site.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "action": {

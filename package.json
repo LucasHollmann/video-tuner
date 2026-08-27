@@ -1,8 +1,8 @@
 {
   "name": "video-tuner",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Controle o volume (ate 600%) e a velocidade dos videos de qualquer site.",
+  "description": "Controle o volume (ate 600%), a velocidade e o picture-in-picture dos videos de qualquer site.",
   "type": "module",
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
