@@ -35,9 +35,10 @@
       }
 
       /* Ampliada com zoom, e nao transform: zoom entra no layout, entao o
-         flex reserva o espaco e a legenda nao e coberta. */
+         flex reserva o espaco e a legenda nao e coberta. O fator acompanha a
+         altura da tela: ampliar demais estoura os 800px da captura. */
       .frame {
-        zoom: 1.55;
+        zoom: 1.4;
         border-radius: 12px;
         overflow: hidden;
         background: #16161a;
@@ -47,7 +48,7 @@
       iframe {
         display: block;
         width: 290px;
-        height: 406px;
+        height: 448px;
         border: 0;
       }
     </style>
