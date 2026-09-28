@@ -7,8 +7,9 @@ import uiCss from "../ui.css?inline";
 import overlayCss from "./overlay.css?inline";
 
 /**
- * Um unico div absoluto para toda a pagina: ele e reparentado para o container
- * do video sob o ponteiro (ver usePlacement), o que preserva o estado do React.
+ * Um unico div para toda a pagina: ele e reparentado para junto do video sob o
+ * ponteiro (ver usePlacement), o que preserva o estado do React. A posicao
+ * (absoluta sobre o video ou no fluxo, acima/abaixo) quem decide e usePlacement.
  */
 function mountOverlay() {
   const host = document.createElement("div");

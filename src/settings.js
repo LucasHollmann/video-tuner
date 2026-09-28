@@ -1,9 +1,16 @@
 /**
- * Configuracao global da extensao (o que aparece no overlay e em qual canto).
+ * Configuracao global da extensao (o que aparece no painel e onde ele fica).
  * Vale para todos os videos; o que e por video sao os valores de
  * velocidade/volume, que vivem so na memoria do content script.
  */
 
+/** Onde o painel fica em relacao ao video. */
+export const PLACEMENTS = [
+  { value: "controls", label: "Na barra do player", hint: "Junto dos botões do próprio site" },
+  { value: "overlay", label: "Sobre o vídeo", hint: "Flutuando em um dos cantos" }
+];
+
+/** Só vale para o modo overlay. */
 export const CORNERS = [
   { value: "top-left", label: "Sup. esquerdo" },
   { value: "top-right", label: "Sup. direito" },
@@ -15,6 +22,8 @@ export const DEFAULT_SETTINGS = {
   showSpeed: true,
   showVolume: true,
   showPip: true,
+  showProgress: true,
+  placement: "controls",
   corner: "top-left"
 };
 

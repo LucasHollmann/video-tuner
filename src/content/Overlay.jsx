@@ -5,6 +5,8 @@ import { engine } from "./engine.js";
 import { usePlacement } from "./usePlacement.js";
 import { useHoveredVideo } from "./useHoveredVideo.js";
 import { PIP_SUPPORTED, usePictureInPicture } from "./usePictureInPicture.js";
+import { useMediaTime } from "./useMediaTime.js";
+import TimeBar from "./TimeBar.jsx";
 
 const SPEED_PRESETS = [0.5, 1, 1.5, 2, 4, 8].map((value) => ({ value, label: `${value}x` }));
 
@@ -44,12 +46,14 @@ function PipIcon() {
 
 export default function Overlay({ hostEl }) {
   const { settings } = useSettings();
-  const hovered = useHoveredVideo(hostEl);
   const [open, setOpen] = useState(false);
+  // Aberto, o painel segura o video ativo: so o clique fora fecha.
+  const hovered = useHoveredVideo(hostEl, open);
 
   const showPip = settings.showPip && PIP_SUPPORTED;
-  // Sliders; o botao de PiP sozinho nao justifica abrir o painel.
-  const hasControls = settings.showSpeed || settings.showVolume;
+  // Tudo que mora no corpo expandido; o botao de PiP sozinho, que fica no selo,
+  // nao justifica abrir o painel.
+  const hasControls = settings.showSpeed || settings.showVolume || settings.showProgress;
   const video = hasControls || showPip ? hovered : null;
 
   // Cada video tem seu proprio estado; engine.getState memoiza o objeto, entao
@@ -59,24 +63,41 @@ export default function Overlay({ hostEl }) {
   );
 
   const pip = usePictureInPicture(video);
+  const media = useMediaTime(settings.showProgress ? video : null);
 
-  usePlacement(hostEl, video, settings.corner);
+  const placement = usePlacement(hostEl, video, settings.placement, settings.corner);
 
-  // Ponteiro saiu do video: recolhe, para nao reabrir expandido na proxima vez.
+  // O video sumiu de vez (troca de pagina, player desmontado): recolhe, para
+  // nao reabrir expandido na proxima vez.
   useEffect(() => {
     if (!video) setOpen(false);
   }, [video]);
+
+  // Fecha no clique fora. Em capture no document, roda antes dos handlers de
+  // dentro do shadow root — logo o stopPropagation do painel nao atrapalha —, e
+  // composedPath enxerga o painel atraves do shadow, que `target` nao enxerga.
+  useEffect(() => {
+    if (!open) return undefined;
+    const onPointerDown = (event) => {
+      if (!event.composedPath().includes(hostEl)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown, true);
+    return () => document.removeEventListener("pointerdown", onPointerDown, true);
+  }, [open, hostEl]);
 
   if (!video) return null;
 
   const volumePct = Math.round(state.volume * 100);
   const pipLabel = pip.active ? "Sair do picture-in-picture" : "Abrir em picture-in-picture";
+  const pillLabel = open ? "Fechar os controles" : "Abrir os controles";
+
+  // Vale o modo que usePlacement conseguiu aplicar, nao o pedido: sem barra
+  // alcancavel, `controls` ja virou overlay e o CSS tem que acompanhar.
+  const anchor = placement === "controls" ? "vt-controls" : `vt-${settings.corner}`;
 
   return (
     <div
-      className={`vt-panel vt-${settings.corner}${open ? " is-open" : ""}`}
-      onPointerEnter={() => setOpen(true)}
-      onPointerLeave={() => setOpen(false)}
+      className={`vt-panel ${anchor}${open ? " is-open" : ""}`}
       // O clique no video costuma dar play/pause: nada do painel vaza pro site.
       onPointerDown={stop}
       onClick={stop}
@@ -84,7 +105,12 @@ export default function Overlay({ hostEl }) {
       onKeyDown={stop}
       onWheel={stop}
     >
-      <div className="vt-pill">
+      <div
+        className={`vt-pill${hasControls ? " is-clickable" : ""}`}
+        title={hasControls ? pillLabel : undefined}
+        aria-expanded={hasControls ? open : undefined}
+        onClick={hasControls ? () => setOpen((value) => !value) : undefined}
+      >
         <span className="vt-mark">VT</span>
         {settings.showSpeed ? <span className="vt-value">{state.speed.toFixed(2)}x</span> : null}
         {settings.showSpeed && settings.showVolume ? <span className="vt-sep">·</span> : null}
@@ -96,7 +122,11 @@ export default function Overlay({ hostEl }) {
             aria-pressed={pip.active}
             title={pipLabel}
             aria-label={pipLabel}
-            onClick={pip.toggle}
+            // Senao o clique sobe para o selo e abre/fecha o painel junto.
+            onClick={(event) => {
+              event.stopPropagation();
+              pip.toggle();
+            }}
           >
             <PipIcon />
           </button>
@@ -105,6 +135,23 @@ export default function Overlay({ hostEl }) {
 
       {open && hasControls ? (
         <div className="vt-body">
+          {settings.showProgress ? (
+            <TimeBar
+              time={media.time}
+              duration={media.duration}
+              paused={media.paused}
+              onSeek={(seconds) => {
+                video.currentTime = seconds;
+              }}
+              // play() rejeita quando o site bloqueia o autoplay: nao ha o que
+              // fazer alem de nao derrubar o painel com um unhandled rejection.
+              onToggle={() => {
+                if (video.paused) video.play().catch(() => {});
+                else video.pause();
+              }}
+            />
+          ) : null}
+
           {settings.showSpeed ? (
             <Control
               id="vt-speed"

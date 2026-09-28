@@ -1,4 +1,5 @@
 import CornerPicker from "../components/CornerPicker.jsx";
+import PlacementPicker from "../components/PlacementPicker.jsx";
 import Toggle from "../components/Toggle.jsx";
 import { useSettings } from "../useSettings.js";
 
@@ -13,7 +14,7 @@ export default function App() {
       </header>
 
       <section className="group">
-        <h2>Controles no overlay</h2>
+        <h2>Controles do painel</h2>
         <Toggle
           id="showSpeed"
           label="Velocidade"
@@ -29,25 +30,48 @@ export default function App() {
           onChange={(showVolume) => update({ showVolume })}
         />
         <Toggle
+          id="showProgress"
+          label="Tempo do vídeo"
+          hint="Barra de progresso com play/pause ao lado"
+          checked={settings.showProgress}
+          onChange={(showProgress) => update({ showProgress })}
+        />
+        <Toggle
           id="showPip"
           label="Picture-in-picture"
           hint="Botão para soltar o vídeo numa janela flutuante"
           checked={settings.showPip}
           onChange={(showPip) => update({ showPip })}
         />
-        {!settings.showSpeed && !settings.showVolume && !settings.showPip ? (
-          <p className="warn">Sem nenhum controle marcado, o overlay não aparece.</p>
+        {!settings.showSpeed && !settings.showVolume && !settings.showProgress && !settings.showPip ? (
+          <p className="warn">Sem nenhum controle marcado, o painel não aparece.</p>
         ) : null}
       </section>
 
       <section className="group">
-        <h2>Canto do overlay</h2>
-        <CornerPicker value={settings.corner} onChange={(corner) => update({ corner })} />
+        <h2>Posição do painel</h2>
+        <PlacementPicker
+          value={settings.placement}
+          onChange={(placement) => update({ placement })}
+        />
+        {settings.placement === "controls" ? (
+          <p className="hint">
+            Depende do player expor a barra: onde ela é a nativa do navegador, o painel volta a
+            flutuar sobre o vídeo.
+          </p>
+        ) : null}
+        {settings.placement === "overlay" ? (
+          <>
+            <h2 className="sub">Canto do vídeo</h2>
+            <CornerPicker value={settings.corner} onChange={(corner) => update({ corner })} />
+          </>
+        ) : null}
       </section>
 
       <p className="hint">
         O ajuste vale só para o vídeo em que foi feito — os outros seguem o padrão do site. Passe o
-        mouse sobre um vídeo para ver o overlay e sobre o overlay para expandir.
+        mouse sobre um vídeo para ver o selo e clique nele para abrir os controles — aberto, o
+        painel só fecha ao clicar fora.
       </p>
     </div>
   );

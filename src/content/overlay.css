@@ -24,6 +24,8 @@
   align-items: flex-end;
 }
 
+/* Sem o hover abrindo mais nada, e ele que sinaliza que o selo e clicavel. */
+.vt-panel:hover,
 .vt-panel.is-open {
   opacity: 1;
 }
@@ -41,6 +43,11 @@
   white-space: nowrap;
   cursor: default;
   user-select: none;
+}
+
+/* Sem nada para expandir (so o botao de PiP no selo), o clique nao faz nada. */
+.vt-pill.is-clickable {
+  cursor: pointer;
 }
 
 .vt-mark {
@@ -145,4 +152,69 @@
 .vt-reset:hover {
   color: var(--text);
   border-color: var(--accent);
+}
+
+/* Dentro da barra do player: sem moldura propria, para o painel passar por
+   mais um grupo de botoes do site. Aparece e some junto com a barra. */
+.vt-panel.vt-controls {
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  opacity: 1;
+}
+
+.vt-panel.vt-controls .vt-pill {
+  padding: 0 4px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  backdrop-filter: none;
+}
+
+/* Unico lado com espaco: a barra ja esta colada no rodape do video. */
+.vt-panel.vt-controls .vt-body {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 10px;
+}
+
+/* Play/pause colado no slider: um controle so. */
+.vt-time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vt-time-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.vt-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  color: var(--text);
+  background: #26262e;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.vt-play:hover {
+  border-color: var(--accent);
+}
+
+.vt-play svg {
+  display: block;
+}
+
+/* Sem presets, a linha do tempo nao precisa da folga de baixo dos outros. */
+.vt-body .control.vt-time {
+  padding-bottom: 8px;
 }

@@ -57,7 +57,7 @@ FEATURES
 
 SETTINGS
 
-The extension icon opens a settings screen where you choose which controls the overlay shows (speed, volume and picture-in-picture, in any combination) and which corner of the video it sits in.
+The extension icon opens a settings screen where you choose which controls the panel shows (speed, volume, playback position and picture-in-picture, in any combination) and where it sits: above or below the video, in the page flow, or floating over one of its corners.
 
 PRIVACY
 
@@ -105,7 +105,7 @@ Adjust the playback speed and volume of videos on the page the user is viewing, 
 
 | Permissão | Justificativa (colar) |
 | --- | --- |
-| `storage` | `Stores only the user's display preferences: which of the controls (speed, volume, picture-in-picture) the overlay shows and which corner of the video it sits in. Nothing else is stored, and nothing leaves the device.` |
+| `storage` | `Stores only the user's display preferences: which of the controls (speed, volume, playback position, picture-in-picture) the panel shows and where it sits relative to the video. Nothing else is stored, and nothing leaves the device.` |
 | `activeTab` | `The keyboard shortcuts need to identify the active tab in order to apply the speed change to the video the user is currently watching.` |
 | Acesso a todos os sites (`host_permissions` / content script em `<all_urls>`) | `Videos exist on any website, and the extension's entire purpose is to control the video wherever it happens to be. The access is used only to inject the script that locates video elements, changes their playbackRate and volume properties, sends them to picture-in-picture on request, and draws the overlaid control. The extension does not read page content, does not access cookies, history or form data, and sends nothing to any server — it makes no network requests at all.` |
 

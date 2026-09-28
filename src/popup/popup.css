@@ -152,3 +152,84 @@ h2 {
   bottom: 1px;
   right: 1px;
 }
+
+.sub {
+  margin-top: 12px;
+}
+
+.modes {
+  display: grid;
+  gap: 5px;
+}
+
+.mode {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 9px;
+  font-family: inherit;
+  text-align: left;
+  color: var(--text);
+  background: #26262e;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.mode:hover {
+  border-color: var(--accent);
+}
+
+.mode.active {
+  border-color: var(--accent);
+  background: rgba(108, 140, 255, 0.16);
+}
+
+.mode-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.mode-label {
+  font-size: 12px;
+}
+
+.mode.active .mode-label {
+  font-weight: 600;
+}
+
+.mode-hint {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* Retangulo do video com a barrinha do painel na posicao correspondente. */
+.mode-figure {
+  position: relative;
+  width: 22px;
+  height: 16px;
+  flex: none;
+  border: 1px solid var(--muted);
+  border-radius: 2px;
+}
+
+.mode-figure::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  width: 10px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+
+.mode-overlay::after {
+  top: 2px;
+}
+
+/* Barra cheia no rodape, dentro da moldura: o painel entra nos controles. */
+.mode-controls::after {
+  left: 1px;
+  bottom: 1px;
+  width: 18px;
+}

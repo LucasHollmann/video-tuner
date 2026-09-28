@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { engine } from "./engine.js";
 
 // Videos menores que isso sao quase sempre thumbnails/anuncios: nao ganham overlay.
@@ -19,24 +19,34 @@ const inside = (rect, x, y) =>
  *
  * @param {HTMLElement} hostEl div do overlay: manter o ponteiro sobre ele
  *   preserva o video ativo.
+ * @param {boolean} hold segura o video ativo mesmo com o ponteiro longe — e o
+ *   que deixa o painel aberto sobreviver ate o clique fora.
  */
-export function useHoveredVideo(hostEl) {
+export function useHoveredVideo(hostEl, hold) {
   const [video, setVideo] = useState(null);
+  const holdRef = useRef(hold);
+  const hideTimer = useRef(null);
+
+  holdRef.current = hold;
+
+  const cancelHide = () => {
+    clearTimeout(hideTimer.current);
+    hideTimer.current = null;
+  };
+
+  // Segurou com um hide ja agendado: o timer pendente sumiria com o painel.
+  useEffect(() => {
+    if (hold) cancelHide();
+  }, [hold]);
 
   useEffect(() => {
     let point = { x: -1, y: -1 };
     let queued = false;
-    let hideTimer = null;
-
-    const cancelHide = () => {
-      clearTimeout(hideTimer);
-      hideTimer = null;
-    };
 
     const scheduleHide = () => {
-      if (hideTimer) return;
-      hideTimer = setTimeout(() => {
-        hideTimer = null;
+      if (hideTimer.current || holdRef.current) return;
+      hideTimer.current = setTimeout(() => {
+        hideTimer.current = null;
         setVideo(null);
       }, HIDE_DELAY);
     };

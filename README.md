@@ -4,15 +4,15 @@ Extensão Chrome (Manifest V3) que coloca um controle de **velocidade**, **volum
 
 ## Como funciona
 
-- Passe o mouse sobre um vídeo → aparece um selo discreto no canto (configurável, por padrão o superior esquerdo) com os valores atuais e o botão de picture-in-picture.
-- Passe o mouse **no selo** → ele expande com os sliders e presets, mais um botão *Voltar ao padrão*.
+- Passe o mouse sobre um vídeo → aparece um selo discreto (por padrão dentro da **barra de controles do próprio player**) com os valores atuais e o botão de picture-in-picture.
+- **Clique no selo** → ele expande com a barra de progresso (com play/pause), os sliders e presets, mais um botão *Voltar ao padrão*. Uma vez aberto, o painel só fecha quando você clica fora dele — dá para sair do vídeo, mexer nos controles e voltar sem perdê-lo.
 - O ajuste vale **só para aquele vídeo**. Nada é persistido: os outros vídeos da página, e a próxima visita, seguem o padrão do site.
 - Um vídeo que nunca foi ajustado não é tocado — o volume e a velocidade que o próprio player definiu ficam intactos.
 
 O ícone da extensão abre a **tela de configuração** (no lugar do popup, sem página separada):
 
-- quais controles aparecem no overlay: velocidade, volume e picture-in-picture, em qualquer combinação;
-- em qual canto do vídeo o overlay fica (superior/inferior, esquerdo/direito).
+- quais controles aparecem no painel: velocidade, volume, tempo (progresso + play/pause) e picture-in-picture, em qualquer combinação;
+- onde o painel fica: dentro da barra de controles do próprio player, ou flutuando sobre o vídeo — e, nesse caso, em qual dos quatro cantos.
 
 Essa configuração é global e aplicada na hora, em todas as abas abertas.
 
@@ -69,12 +69,15 @@ src/
     App.jsx                 # tela de configuração
     popup.css               # estrutura só dessa tela
   content/
-    index.jsx               # cria o div do overlay e monta o React no Shadow DOM
+    index.jsx               # cria o div do painel e monta o React no Shadow DOM
     engine.js               # estado por vídeo, WebAudio, atalhos, store observável
     Overlay.jsx             # selo + painel expansível
     useHoveredVideo.js      # qual vídeo está sob o ponteiro (hit test geométrico)
     usePictureInPicture.js  # estado e acionamento do PiP do vídeo ativo
-    usePlacement.js         # reparenta e posiciona o div no canto escolhido
+    useMediaTime.js         # posição/pausa do vídeo ativo (fora do engine)
+    TimeBar.jsx             # barra de progresso + play/pause
+    usePlacement.js         # reparenta o div: na barra do player ou sobre o vídeo
+    controlBar.js           # acha a barra de controles do player (modo "na barra")
     overlay.css             # selo/painel (injetado inline no shadow root)
 public/                     # copiado para dist/ sem transformação
   manifest.json             # MV3: permissões, content script, commands
@@ -86,7 +89,13 @@ store/                      # imagens geradas para a Chrome Web Store
 dist/                       # build final — é esta pasta que se carrega no Chrome
 ```
 
-O overlay é **um único div `position: absolute`** para toda a página. Ele é reparentado para o container do vídeo sob o ponteiro, o que mantém o estado do React e dispensa recalcular posição em scroll ou fullscreen — o offset é relativo ao pai. Se esse pai for `position: static`, ele recebe `relative` temporariamente (restaurado quando o overlay sai).
+O painel é **um único div** para toda a página, reparentado para junto do vídeo sob o ponteiro — o que mantém o estado do React.
+
+No modo `controls` ele vira um item flex da barra do próprio player, e some junto com ela. Não há padrão para isso — cada player monta a barra do seu jeito, e player com `controls` nativo é impossível, porque a barra fica num shadow root do navegador. `controlBar.js` tem uma entrada fixa para o YouTube e, para o resto, um palpite: dentro do player, a faixa flex mais baixa que seja larga, rasa, colada no rodapé do vídeo e com dois ou mais botões. Sem barra alcançável, o modo cai em `overlay`.
+
+No modo `overlay` ele é `position: absolute` dentro do container do vídeo, o que dispensa recalcular posição em scroll ou fullscreen — o offset é relativo ao pai. Se esse pai for `position: static`, ele recebe `relative` temporariamente (restaurado quando o painel sai).
+
+A posição de reprodução fica fora do `engine.js` (em `useMediaTime.js`): o engine guarda ajustes do usuário, que mudam raramente, enquanto `timeupdate` dispara quatro vezes por segundo e não vale notificar toda a árvore.
 
 O `engine.js` guarda os ajustes num `WeakMap` por elemento e expõe um store observável (`subscribe`/`getState`) consumido via `useSyncExternalStore`, então mudanças por atalho de teclado aparecem no overlay na hora.
 
