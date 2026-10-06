@@ -24,6 +24,7 @@ export const DEFAULT_SETTINGS = {
   showPip: true,
   showProgress: true,
   placement: "controls",
+  expandInBar: true,
   corner: "top-left"
 };
 

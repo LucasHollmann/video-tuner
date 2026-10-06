@@ -6,6 +6,7 @@ import { usePlacement } from "./usePlacement.js";
 import { useHoveredVideo } from "./useHoveredVideo.js";
 import { PIP_SUPPORTED, usePictureInPicture } from "./usePictureInPicture.js";
 import { useMediaTime } from "./useMediaTime.js";
+import { useBarSpace } from "./useBarSpace.js";
 import TimeBar from "./TimeBar.jsx";
 
 const SPEED_PRESETS = [0.5, 1, 1.5, 2, 4, 8].map((value) => ({ value, label: `${value}x` }));
@@ -44,6 +45,72 @@ function PipIcon() {
   );
 }
 
+/**
+ * Campo expandido direto na barra do player: o valor que ja aparecia no selo,
+ * agora com o slider do lado. Sem presets — quem quiser o resto abre o painel.
+ */
+function BarField({ tone, icon, label, display, value, min, max, step, onChange }) {
+  return (
+    // O clique no slider nao pode subir para o selo e abrir/fechar o painel.
+    <span className={`vt-field vt-field-${tone}`} onClick={stop}>
+      {/* Lado a lado na barra, "1.00x" e "100%" se confundem: o icone e o que
+          diz de cara qual campo e qual. */}
+      <span className="vt-field-icon" title={label}>
+        {icon}
+      </span>
+      <span className="vt-value">{display}</span>
+      <input
+        type="range"
+        aria-label={label}
+        title={label}
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+      />
+    </span>
+  );
+}
+
+/** Ponteiro de velocimetro — "rapido" sem depender de ler o numero. */
+function SpeedIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" focusable="false">
+      <path
+        d="M3.2 14.5a6.8 6.8 0 1 1 13.6 0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+      <path
+        d="M10 14.5 13.8 10"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/** Alto-falante com uma onda — o simbolo universal de volume. */
+function VolumeIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" focusable="false">
+      <path d="M4 7.8h3l3.6-3.1v10.6L7 12.2H4z" fill="currentColor" />
+      <path
+        d="M13.4 7.5a3.9 3.9 0 0 1 0 5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export default function Overlay({ hostEl }) {
   const { settings } = useSettings();
   const [open, setOpen] = useState(false);
@@ -66,6 +133,13 @@ export default function Overlay({ hostEl }) {
   const media = useMediaTime(settings.showProgress ? video : null);
 
   const placement = usePlacement(hostEl, video, settings.placement, settings.corner);
+
+  // Expandir so faz sentido dentro da barra do player: no modo overlay o painel
+  // flutua sobre a imagem, e alargar o selo cobriria o video. Depende tambem da
+  // barra ter folga — medida depois de usePlacement encaixar o painel nela.
+  const fieldCount = (settings.showSpeed ? 1 : 0) + (settings.showVolume ? 1 : 0);
+  const wantsFields = settings.expandInBar && placement === "controls";
+  const expanded = useBarSpace(hostEl, wantsFields, wantsFields ? fieldCount : 0, video);
 
   // O video sumiu de vez (troca de pagina, player desmontado): recolhe, para
   // nao reabrir expandido na proxima vez.
@@ -112,9 +186,46 @@ export default function Overlay({ hostEl }) {
         onClick={hasControls ? () => setOpen((value) => !value) : undefined}
       >
         <span className="vt-mark">VT</span>
-        {settings.showSpeed ? <span className="vt-value">{state.speed.toFixed(2)}x</span> : null}
-        {settings.showSpeed && settings.showVolume ? <span className="vt-sep">·</span> : null}
-        {settings.showVolume ? <span className="vt-value">{volumePct}%</span> : null}
+        {/* Volume antes de velocidade, expandido ou nao: a ordem nao muda
+            quando a barra encolhe e os campos viram so os numeros. */}
+        {settings.showVolume ? (
+          expanded ? (
+            <BarField
+              tone="volume"
+              icon={<VolumeIcon />}
+              label="Volume"
+              display={`${volumePct}%`}
+              value={clamp(volumePct, 0, 600)}
+              min={0}
+              max={600}
+              step={5}
+              onChange={(pct) => engine.setVolume(video, pct / 100)}
+            />
+          ) : (
+            <span className="vt-value">{volumePct}%</span>
+          )
+        ) : null}
+        {/* Expandidos, os campos ja se separam sozinhos. */}
+        {settings.showSpeed && settings.showVolume && !expanded ? (
+          <span className="vt-sep">·</span>
+        ) : null}
+        {settings.showSpeed ? (
+          expanded ? (
+            <BarField
+              tone="speed"
+              icon={<SpeedIcon />}
+              label="Velocidade"
+              display={`${state.speed.toFixed(2)}x`}
+              value={clamp(state.speed, 0.25, MAX_SPEED)}
+              min={0.25}
+              max={MAX_SPEED}
+              step={0.05}
+              onChange={(value) => engine.setSpeed(video, value)}
+            />
+          ) : (
+            <span className="vt-value">{state.speed.toFixed(2)}x</span>
+          )
+        ) : null}
         {showPip ? (
           <button
             type="button"

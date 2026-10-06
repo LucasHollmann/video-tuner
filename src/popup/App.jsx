@@ -55,10 +55,19 @@ export default function App() {
           onChange={(placement) => update({ placement })}
         />
         {settings.placement === "controls" ? (
-          <p className="hint">
-            Depende do player expor a barra: onde ela é a nativa do navegador, o painel volta a
-            flutuar sobre o vídeo.
-          </p>
+          <>
+            <p className="hint">
+              Depende do player expor a barra: onde ela é a nativa do navegador, o painel volta a
+              flutuar sobre o vídeo.
+            </p>
+            <Toggle
+              id="expandInBar"
+              label="Expandir na barra"
+              hint="Sliders de velocidade e volume direto na barra, quando couberem"
+              checked={settings.expandInBar}
+              onChange={(expandInBar) => update({ expandInBar })}
+            />
+          </>
         ) : null}
         {settings.placement === "overlay" ? (
           <>

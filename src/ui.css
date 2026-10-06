@@ -7,6 +7,10 @@
   --text: #f2f2f5;
   --muted: #9a9aa6;
   --accent: #6c8cff;
+  /* Dois desvios do azul do tema, um para cada campo da barra: o volume puxa
+     para o violeta, a velocidade para o ciano. Distinguem sem sair da paleta. */
+  --accent-volume: #9c7cff;
+  --accent-speed: #5cb0f0;
   --border: #2c2c35;
 }
 

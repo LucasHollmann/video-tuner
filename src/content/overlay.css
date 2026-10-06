@@ -79,8 +79,51 @@
   cursor: pointer;
 }
 
+/* Campo expandido na barra do player: o valor com o slider ao lado. */
+.vt-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Cada campo pinta o proprio icone e slider com o seu tom. */
+.vt-field-volume {
+  --field: var(--accent-volume);
+}
+
+.vt-field-speed {
+  --field: var(--accent-speed);
+}
+
+.vt-field-icon {
+  display: inline-flex;
+  color: var(--field);
+}
+
+.vt-field-icon svg {
+  display: block;
+}
+
+.vt-field .vt-value {
+  /* Largura fixa: o numero muda a cada passo do slider e nao pode empurrar
+     os botoes do player a cada arrasto. */
+  min-width: 44px;
+  text-align: right;
+}
+
+.vt-field input[type="range"] {
+  width: 76px;
+  cursor: pointer;
+  accent-color: var(--field);
+}
+
+.vt-field + .vt-field {
+  margin-left: 6px;
+}
+
 /* Separa do valor a esquerda — mas so quando existe algum valor no selo. */
-.vt-value + .vt-pip {
+.vt-value + .vt-pip,
+.vt-field + .vt-pip {
   padding-left: 7px;
   margin-left: 0;
   border-left: 1px solid var(--border);
