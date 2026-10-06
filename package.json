@@ -1,6 +1,6 @@
 {
   "name": "video-tuner",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "description": "Controle a velocidade, o volume (ate 600%), o tempo e o picture-in-picture dos videos de qualquer site.",
   "type": "module",
