@@ -5,6 +5,7 @@ import { engine } from "./engine.js";
 import { usePlacement } from "./usePlacement.js";
 import { useHoveredVideo } from "./useHoveredVideo.js";
 import { PIP_SUPPORTED, usePictureInPicture } from "./usePictureInPicture.js";
+import { useSoftFullscreen } from "./useSoftFullscreen.js";
 import { useMediaTime } from "./useMediaTime.js";
 import { useBarSpace } from "./useBarSpace.js";
 import TimeBar from "./TimeBar.jsx";
@@ -41,6 +42,41 @@ function PipIcon() {
         strokeWidth="1.6"
       />
       <rect x="9.5" y="9.5" width="6.5" height="5" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+/**
+ * Cantos abrindo para fora (entrar) ou para dentro (sair) — o par classico de
+ * tela cheia, que todo player ja usa.
+ */
+function SoftFullscreenIcon({ active }) {
+  return (
+    <svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true" focusable="false">
+      <path
+        d={
+          active
+            ? "M8.5 3.5v5h-5M11.5 16.5v-5h5"
+            : "M3.5 8V3.5h4.5M16.5 12v4.5h-4.5"
+        }
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d={
+          active
+            ? "M16.5 3.5v5h-5M3.5 16.5v-5h5"
+            : "M16.5 8V3.5h-4.5M3.5 12v4.5h4.5"
+        }
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -114,14 +150,18 @@ function VolumeIcon() {
 export default function Overlay({ hostEl }) {
   const { settings } = useSettings();
   const [open, setOpen] = useState(false);
-  // Aberto, o painel segura o video ativo: so o clique fora fecha.
-  const hovered = useHoveredVideo(hostEl, open);
+  const soft = useSoftFullscreen();
+  // Aberto, o painel segura o video ativo: so o clique fora fecha. Em tela
+  // cheia leve o mesmo vale, senao o botao de sair sumiria no primeiro
+  // movimento do ponteiro para fora do video.
+  const hovered = useHoveredVideo(hostEl, open || !!soft.target);
 
   const showPip = settings.showPip && PIP_SUPPORTED;
-  // Tudo que mora no corpo expandido; o botao de PiP sozinho, que fica no selo,
-  // nao justifica abrir o painel.
+  const showSoftFullscreen = settings.showSoftFullscreen;
+  // Tudo que mora no corpo expandido; os botoes do selo (PiP, tela cheia leve)
+  // sozinhos nao justificam abrir o painel.
   const hasControls = settings.showSpeed || settings.showVolume || settings.showProgress;
-  const video = hasControls || showPip ? hovered : null;
+  const video = hasControls || showPip || showSoftFullscreen ? hovered : null;
 
   // Cada video tem seu proprio estado; engine.getState memoiza o objeto, entao
   // a comparacao por referencia do useSyncExternalStore continua valendo.
@@ -139,7 +179,14 @@ export default function Overlay({ hostEl }) {
   // barra ter folga — medida depois de usePlacement encaixar o painel nela.
   const fieldCount = (settings.showSpeed ? 1 : 0) + (settings.showVolume ? 1 : 0);
   const wantsFields = settings.expandInBar && placement === "controls";
-  const expanded = useBarSpace(hostEl, wantsFields, wantsFields ? fieldCount : 0, video);
+  const buttonCount = (showPip ? 1 : 0) + (showSoftFullscreen ? 1 : 0);
+  const expanded = useBarSpace(
+    hostEl,
+    wantsFields,
+    wantsFields ? fieldCount : 0,
+    video,
+    buttonCount
+  );
 
   // O video sumiu de vez (troca de pagina, player desmontado): recolhe, para
   // nao reabrir expandido na proxima vez.
@@ -163,6 +210,8 @@ export default function Overlay({ hostEl }) {
 
   const volumePct = Math.round(state.volume * 100);
   const pipLabel = pip.active ? "Sair do picture-in-picture" : "Abrir em picture-in-picture";
+  const softActive = soft.isActive(video);
+  const softLabel = softActive ? "Sair da tela cheia leve (Esc)" : "Tela cheia leve";
   const pillLabel = open ? "Fechar os controles" : "Abrir os controles";
 
   // Vale o modo que usePlacement conseguiu aplicar, nao o pedido: sem barra
@@ -225,6 +274,22 @@ export default function Overlay({ hostEl }) {
           ) : (
             <span className="vt-value">{state.speed.toFixed(2)}x</span>
           )
+        ) : null}
+        {showSoftFullscreen ? (
+          <button
+            type="button"
+            className={`vt-sfs${softActive ? " is-active" : ""}`}
+            aria-pressed={softActive}
+            title={softLabel}
+            aria-label={softLabel}
+            // Senao o clique sobe para o selo e abre/fecha o painel junto.
+            onClick={(event) => {
+              event.stopPropagation();
+              soft.toggle(video);
+            }}
+          >
+            <SoftFullscreenIcon active={softActive} />
+          </button>
         ) : null}
         {showPip ? (
           <button

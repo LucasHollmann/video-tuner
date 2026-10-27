@@ -43,7 +43,18 @@ export default function App() {
           checked={settings.showPip}
           onChange={(showPip) => update({ showPip })}
         />
-        {!settings.showSpeed && !settings.showVolume && !settings.showProgress && !settings.showPip ? (
+        <Toggle
+          id="showSoftFullscreen"
+          label="Tela cheia leve"
+          hint="Vídeo ocupando a janela do navegador, sem entrar em tela cheia do sistema"
+          checked={settings.showSoftFullscreen}
+          onChange={(showSoftFullscreen) => update({ showSoftFullscreen })}
+        />
+        {!settings.showSpeed &&
+        !settings.showVolume &&
+        !settings.showProgress &&
+        !settings.showPip &&
+        !settings.showSoftFullscreen ? (
           <p className="warn">Sem nenhum controle marcado, o painel não aparece.</p>
         ) : null}
       </section>

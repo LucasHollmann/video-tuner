@@ -22,6 +22,7 @@ export const DEFAULT_SETTINGS = {
   showSpeed: true,
   showVolume: true,
   showPip: true,
+  showSoftFullscreen: true,
   showProgress: true,
   placement: "controls",
   expandInBar: true,

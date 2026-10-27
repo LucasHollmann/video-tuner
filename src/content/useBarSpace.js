@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 
 /**
  * Quanto a barra precisa ter de folga para o painel expandir os campos.
- * Sao estimativas do proprio CSS (.vt-field em overlay.css): o selo fechado
- * mais um bloco "icone + valor + slider" por campo. Medir o painel expandido de
+ * Sao estimativas do proprio CSS (.vt-field em overlay.css): o selo fechado,
+ * cada botao de icone que ele carrega (PiP, tela cheia leve) e um bloco
+ * "icone + valor + slider" por campo. Medir o painel expandido de
  * verdade exigiria desenha-lo antes de saber se cabe — e ele piscaria nos
  * players apertados.
  */
-const BASE = 72;
+const BASE = 52;
+const PER_BUTTON = 20;
 const PER_FIELD = 152;
 
 /** Folga extra so para expandir: evita piscar quando a barra oscila 1-2px. */
@@ -82,9 +84,10 @@ function freeSpace(hostEl) {
  * @param {boolean} active false quando o modo expandido nem esta em jogo
  * @param {number} fields quantos campos (velocidade, volume) seriam expandidos
  * @param {HTMLVideoElement | null} video so para remedir quando o video troca
+ * @param {number} buttons quantos botoes de icone o selo carrega
  * @returns {boolean}
  */
-export function useBarSpace(hostEl, active, fields, video) {
+export function useBarSpace(hostEl, active, fields, video, buttons = 1) {
   const [fits, setFits] = useState(false);
 
   useEffect(() => {
@@ -93,7 +96,7 @@ export function useBarSpace(hostEl, active, fields, video) {
       return undefined;
     }
 
-    const needed = BASE + fields * PER_FIELD;
+    const needed = BASE + buttons * PER_BUTTON + fields * PER_FIELD;
 
     const measure = () => {
       const free = freeSpace(hostEl);
@@ -116,7 +119,7 @@ export function useBarSpace(hostEl, active, fields, video) {
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [hostEl, active, fields, video]);
+  }, [hostEl, active, fields, video, buttons]);
 
   return fits;
 }

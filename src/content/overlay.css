@@ -66,7 +66,8 @@
   color: var(--muted);
 }
 
-.vt-pip {
+.vt-pip,
+.vt-sfs {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -121,24 +122,30 @@
   margin-left: 6px;
 }
 
-/* Separa do valor a esquerda — mas so quando existe algum valor no selo. */
+/* Separa do valor a esquerda — mas so quando existe algum valor no selo. O
+   segundo botao, se houver, vem colado no primeiro: o grupo e um so. */
 .vt-value + .vt-pip,
-.vt-field + .vt-pip {
+.vt-field + .vt-pip,
+.vt-value + .vt-sfs,
+.vt-field + .vt-sfs {
   padding-left: 7px;
   margin-left: 0;
   border-left: 1px solid var(--border);
   border-radius: 0 5px 5px 0;
 }
 
-.vt-pip:hover {
+.vt-pip:hover,
+.vt-sfs:hover {
   color: var(--text);
 }
 
-.vt-pip.is-active {
+.vt-pip.is-active,
+.vt-sfs.is-active {
   color: var(--accent);
 }
 
-.vt-pip svg {
+.vt-pip svg,
+.vt-sfs svg {
   display: block;
 }
 

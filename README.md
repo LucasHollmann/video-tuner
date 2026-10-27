@@ -4,14 +4,14 @@ Extensão Chrome (Manifest V3) que coloca um controle de **velocidade**, **volum
 
 ## Como funciona
 
-- Passe o mouse sobre um vídeo → aparece um selo discreto (por padrão dentro da **barra de controles do próprio player**) com os valores atuais e o botão de picture-in-picture.
+- Passe o mouse sobre um vídeo → aparece um selo discreto (por padrão dentro da **barra de controles do próprio player**) com os valores atuais e os botões de tela cheia leve e picture-in-picture.
 - **Clique no selo** → ele expande com a barra de progresso (com play/pause), os sliders e presets, mais um botão *Voltar ao padrão*. Uma vez aberto, o painel só fecha quando você clica fora dele — dá para sair do vídeo, mexer nos controles e voltar sem perdê-lo.
 - O ajuste vale **só para aquele vídeo**. Nada é persistido: os outros vídeos da página, e a próxima visita, seguem o padrão do site.
 - Um vídeo que nunca foi ajustado não é tocado — o volume e a velocidade que o próprio player definiu ficam intactos.
 
 O ícone da extensão abre a **tela de configuração** (no lugar do popup, sem página separada):
 
-- quais controles aparecem no painel: velocidade, volume, tempo (progresso + play/pause) e picture-in-picture, em qualquer combinação;
+- quais controles aparecem no painel: velocidade, volume, tempo (progresso + play/pause), tela cheia leve e picture-in-picture, em qualquer combinação;
 - onde o painel fica: dentro da barra de controles do próprio player, ou flutuando sobre o vídeo — e, nesse caso, em qual dos quatro cantos.
 
 Essa configuração é global e aplicada na hora, em todas as abas abertas.
@@ -21,6 +21,7 @@ Essa configuração é global e aplicada na hora, em todas as abas abertas.
 - **Velocidade** de 0.25x a 8x pelo overlay (0.07x a 16x via atalhos), com presets até 8x.
 - **Volume de 0% a 600%** — acima de 100% o áudio é amplificado por um `GainNode` do WebAudio.
 - **Picture-in-picture** num clique, direto no selo: solta o vídeo numa janela flutuante e traz de volta. Se o player tiver marcado `disablePictureInPicture` para esconder o recurso, o clique libera — é um pedido explícito seu.
+- **Tela cheia leve** num clique: o vídeo passa a ocupar a janela inteira do navegador, sem entrar no fullscreen do sistema — a barra de endereço e as outras janelas continuam acessíveis, e nada de notificação fica escondido. `Esc` sai. Funciona em qualquer player, inclusive onde a tela cheia nativa está bloqueada.
 - **Atalhos de teclado** globais, aplicados ao vídeo sob o ponteiro (ou, na falta dele, ao maior vídeo visível que esteja tocando):
   | Atalho | Ação |
   | --- | --- |
@@ -74,6 +75,8 @@ src/
     Overlay.jsx             # selo + painel expansível
     useHoveredVideo.js      # qual vídeo está sob o ponteiro (hit test geométrico)
     usePictureInPicture.js  # estado e acionamento do PiP do vídeo ativo
+    softFullscreen.js       # estica o player até as bordas da janela (CSS da página)
+    useSoftFullscreen.js    # liga o painel ao estado da tela cheia leve
     useMediaTime.js         # posição/pausa do vídeo ativo (fora do engine)
     TimeBar.jsx             # barra de progresso + play/pause
     usePlacement.js         # reparenta o div: na barra do player ou sobre o vídeo
@@ -106,6 +109,8 @@ O overlay leva o React para dentro de cada página (`dist/content.js`, ~200 kB /
 Vídeos menores que 160×90 px não recebem overlay — evita que thumbnails e anúncios ganhem um painel.
 
 O botão de picture-in-picture só aparece onde o navegador permite (`document.pictureInPictureEnabled`): fica de fora em iframes sem a permission policy `picture-in-picture` e em navegadores sem a API.
+
+A tela cheia leve é CSS aplicado na própria página, não uma API do navegador: o player ganha `position: fixed` colado nas bordas, os ancestrais perdem o que cria bloco de contenção (`transform`, `filter`, `contain`) e todo o resto da página — os irmãos de cada degrau entre o player e o `<html>` — recebe `display: none`. Ocultar é o que resolve de fato: um cabeçalho `fixed` em outro contexto de empilhamento fica por cima de qualquer `z-index`. Um `MutationObserver` cobre o que o site pendurar depois (modais, toasts, banners). Por isso ela não depende de permissão nem de gesto do usuário — e por isso também é um palpite sobre a estrutura do site, que pode ficar torto em players muito fora do comum. Sair (botão ou `Esc`) devolve tudo ao estado anterior.
 
 Como nada é persistido, recarregar a página zera os ajustes. É o comportamento pedido: configuração por vídeo, padrão para o resto.
 
